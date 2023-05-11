@@ -1,0 +1,375 @@
+{% extends 'ia_app/base/base_page.html' %}
+
+{% block title %}
+<h1 class="text-white">Historiales</h1>
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .image-card-header {
+        width: 190px;
+        height: 190px;
+        display: flex;
+        align-self: center;
+    }
+
+    .nav-tabs {
+        border-bottom: none;
+    }
+
+    .fs-0 {
+        font-size: 50px;
+    }
+
+    label {
+        overflow: hidden;
+    }
+
+    .msg {
+        display: block;
+        width: 150px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    #card_chats {
+        height: 58vh;
+        overflow-y: scroll;
+    }
+
+    #card_content_chat {
+        height: 68vh;
+        overflow-y: scroll;
+        background-color: #f6f6f6;
+    }
+
+    .msg_chat_bot {
+        width: 5%;
+        border-radius: 50%;
+        /* margin: 0 1em 0 1em; */
+    }
+
+    .txt_chat_bot {
+        font-size: 18px;
+        display: inline-flex;
+        width: 330px;
+        text-align: justify;
+        margin: 5px 5px 5px 5px;
+        background-color: #D1F2EB;
+        border-radius: 5px;
+        padding: 0.8rem;
+        border-radius: 0 15px 15px 15px;
+    }
+
+    .txt_chat_user {
+        font-size: 18px;
+        display: inline-flex;
+        width: 330px;
+        text-align: justify;
+        margin: 5px;
+        background-color: #D1F2EB;
+        border-radius: 5px;
+        padding: 0.8rem;
+        border-radius: 15px 0 15px 15px;
+    }
+
+    .icon_chat_user {
+        font-size: 30px;
+    }
+
+    .chat-select {
+        cursor: pointer;
+    }
+
+    main {
+        height: 80vh;
+        background-color: #fff;
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(350px, 33%) 1fr;
+    }
+
+    .padding {
+        padding: 0.5rem 0.75rem;
+    }
+
+    section {
+        /* border: 1px solid #fff; */
+        border-radius: 4px;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+    }
+
+    nav img {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 999px;
+    }
+
+    .search-container {
+        background-color: #f6f6f6;
+    }
+
+    .input-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 2.5rem;
+        padding: 0 1.5rem;
+        background: white;
+        border-radius: 999px;
+    }
+
+    .input-container span {
+        color: #666;
+    }
+
+    input {
+        font-family: inherit;
+        border: none;
+        width: 100%;
+        margin-left: 1rem;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    ul li {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        background-color: white;
+        border-top: 1px solid #eee;
+        cursor: pointer;
+    }
+
+    ol,
+    ul {
+        padding-left: 0rem !important;
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        /* justify-content: center; */
+    }
+
+    li img {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 999px;
+    }
+
+    .name {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .name time {
+        color: #666;
+        font-size: 0.85rem;
+    }
+
+    .preview {
+        color: #666;
+        font-size: 0.95rem;
+        margin-top: 2px;
+    }
+
+    .chat-container {
+        /* display: flex; */
+        /* flex-direction: column; */
+        /* justify-content: center; */
+        /* align-items: center; */
+        background: #fff;
+    }
+
+    #img_bot {
+        width: 15%;
+        height: auto;
+        border-radius: 50%;
+    }
+
+    .list_users {
+        border-radius: 5px;
+    }
+
+    .title-chat {
+        margin-top: 1.7rem;
+    }
+
+    #btn_chat {
+        font-size: 30px;
+        color: #20D489;
+        cursor: pointer;
+        margin-top: -.4em;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="row mt-3 mb-4">
+                {% for bot in bots %}
+                <div class="col-3">
+                    <div class="card">
+                        <img src="{{ bot.imagen }}" alt="" class="image-card-header card-img-top mt-2">
+                        <div class="card-body text-center">
+                            <h3>{{ bot.nombre }}</h3>
+                            <button type="button" class="btn btn-primary mt-2" id="btn_bot_{{ bot.id }}"
+                                onclick="showContent('{{ bot.id }}','{{ bot.nombre }}', '{{ bot.imagen }}')">
+                                Historial
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+            <div class="row mt-3 mb-3">
+                <main>
+                    <section class="user-list">
+                        <nav class="padding">
+                            <i class="fa-solid fa-arrow-left" id="btn_chat"></i>
+                            <h3 id="txt_name" class="float-center"></h3>
+                            <img src="" id="img_bot">
+                        </nav>
+                        <div class="search-container padding">
+                            <div class="input-container">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" class="" placeholder="Buscar usuario">
+                            </div>
+                        </div>
+                        <ul class="list_users">
+                            <li class="padding mx-0" id="chat_user_1">
+                                <i class="fa-solid fa-circle-user fs-0"></i>
+                                <div class="column">
+                                    <div class="name">
+                                        <span>Usuario 1</span>
+                                        <time>11-05-2023</time>
+                                    </div>
+                                    <div class="preview">
+                                        <span for="" class="msg mt-3" id="txt_msg">
+                                            Ultimo mensaje enviado en el chat
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="padding mx-0" id="chat_user_2">
+                                <i class="fa-solid fa-circle-user fs-0"></i>
+                                <div class="column">
+                                    <div class="name">
+                                        <span>Usuario 2</span>
+                                        <time>11-05-2023</time>
+                                    </div>
+                                    <div class="preview">
+                                        <span for="" class="msg mt-3" id="txt_msg">
+                                            Ultimo mensaje enviado en el chat
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="padding mx-0" id="chat_user_3">
+                                <i class="fa-solid fa-circle-user fs-0"></i>
+                                <div class="column">
+                                    <div class="name">
+                                        <span>Usuario 3</span>
+                                        <time>11-05-2023</time>
+                                    </div>
+                                    <div class="preview">
+                                        <span for="" class="msg mt-3" id="txt_msg">
+                                            Ultimo mensaje enviado en el chat
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
+                    <div>
+                        <section class="chat-container padding" id="container_chats">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fa-solid fa-circle-user fs-0 mt-3 mb-4"></i>
+                                    <h3 class="float-start title-chat">
+                                        Usuario
+                                    </h3>
+                                </div>
+                                <div class="card-body" id="card_content_chat">
+                                    <div class="row">
+                                        <div class="float-start">
+                                            <p>
+                                                <img id="img_bot_chat" src="" alt="" class="msg_chat_bot">
+                                                <span class="txt_chat_bot">
+                                                    Respuesta del bot en el chat jdhje hadfir kslfnei
+                                                    io4ovfnkf knvcloe dhvjf skvbti dkvro ij 34 Lorem ipsum dolor sit,
+                                                    amet
+                                                    consectetur adipisicing elit. Quaerat ut accusamus sapiente rerum
+                                                    delectus sit odio suscipit tenetur praesentium! Quis, omnis at?
+                                                    Aspernatur voluptates assumenda quisquam nihil laboriosam rerum.
+                                                    Placeat.
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="float-end text-end">
+                                            <p>
+                                                <span class="txt_chat_user">
+                                                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur
+                                                    modi quam consequatur architecto possimus. Laboriosam, repellat
+                                                    iste,
+                                                    excepturi magni corrupti culpa dolorem beatae quidem officiis esse
+                                                    illo.
+                                                    Placeat, laboriosam nihil!
+                                                </span>
+                                                <img src="static/media/logos/circle-user-solid.svg" alt=""
+                                                    class="msg_chat_bot">
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script src="../static/js/historial.js"></script>
+
+<!-- Script para bloquear al F12 :vvvvvvv -->
+<script>
+    // document.onkeypress = function (event) {
+    //     event = (event || window.event);
+    //     if (event.keyCode == 123) {
+    //         return false;
+    //     }
+    // }
+    // document.onmousedown = function (event) {
+    //     event = (event || window.event);
+    //     if (event.keyCode == 123) {
+    //         return false;
+    //     }
+    // }
+    // document.onkeydown = function (event) {
+    //     event = (event || window.event);
+    //     if (event.keyCode == 123) {
+    //         return false;
+    //     }
+    // }  
+</script>
+
+{% endblock %}
